@@ -1,7 +1,7 @@
 {
     "name": "controllabletabcontainer",
     "widgetName": "ControllableTabContainer",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "description": "Tab container that allows dynamically controlling which tab is shown by default and other tabs are NOT rendered when hidden",
     "copyright": "© Mendix Technology BV 2022. All rights reserved.",
     "author": "Benjamin Griggs",

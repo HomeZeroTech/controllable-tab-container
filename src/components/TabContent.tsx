@@ -9,7 +9,8 @@ type tabContentProps = {
 
 const Tab = ({ currentTabIndex, tab, isLoading }: tabContentProps): ReactElement =>
     tab ? (
-        <div className={"ctc-tab"} key="test">
+        // Key on the index so switching tabs remounts the content instead of reusing another tab's state
+        <div className={"ctc-tab"} key={currentTabIndex}>
             {tab}
         </div>
     ) : isLoading ? (

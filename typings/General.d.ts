@@ -1,8 +1,11 @@
+import { ReactNode } from "react";
+import { CaptionTypeEnum } from "./ControllableTabContainerProps";
+
 export type Tab = {
-    captionType: TabCaptionTypeEnum;
+    captionType: CaptionTypeEnum;
     captionText: string;
     captionHTML: string;
-    captionContent: ReactElement;
+    captionContent: ReactNode;
     onSelect: () => void;
     badgeText?: string;
 };

@@ -1,4 +1,4 @@
-import { ReactElement, createElement, useMemo } from "react";
+import { ReactElement, ReactNode, createElement, useMemo } from "react";
 import classNames from "classnames";
 import { BadgeDirectionEnum, BadgeStyleEnum, CaptionTypeEnum } from "../../typings/ControllableTabContainerProps";
 import Badge from "./Badge";
@@ -8,7 +8,7 @@ type tabTagProps = {
     captionType: CaptionTypeEnum;
     captionText: string;
     captionHTML: string;
-    captionContent: ReactElement;
+    captionContent: ReactNode;
     badgeStyle: BadgeStyleEnum;
     badgeText?: string;
     badgeDirection: BadgeDirectionEnum;
@@ -29,7 +29,7 @@ function TabTag({
     tabIndex
 }: tabTagProps): ReactElement {
     const renderCaption = useMemo(
-        (): ReactElement =>
+        (): ReactNode =>
             captionType === "text" ? (
                 <span className="mx-text">{captionText}</span>
             ) : captionType === "html" ? (

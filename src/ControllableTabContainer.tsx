@@ -39,7 +39,22 @@ export function ControllableTabContainer({
     tabIndex,
     class: className
 }: ControllableTabContainerContainerProps): ReactElement {
-    const [currentTabIndex, setCurrentTabIndex] = useState<number>(Number(defaultTabIndex.value));
+    // Undefined while the expression is still loading - Number(undefined) would give NaN
+    const defaultIndex: number | undefined =
+        defaultTabIndex.value !== undefined ? Number(defaultTabIndex.value) : undefined;
+    const [selectedTabIndex, setSelectedTabIndex] = useState<number | undefined>(defaultIndex);
+    // Fall back to the default until the effect below has synced it into state
+    const currentTabIndex: number | undefined = selectedTabIndex ?? defaultIndex;
+
+    // In static mode the tab list depends on expressions that are still loading on the first render
+    // (React client), which would otherwise briefly show the "No content found" message
+    const isLoading: boolean =
+        defaultTabIndex.status === ValueStatus.Loading ||
+        (tabListType === "dynamic"
+            ? datasource.status === ValueStatus.Loading
+            : tabList.some(
+                  tab => tab.visible.status === ValueStatus.Loading || tab.sort.status === ValueStatus.Loading
+              ));
 
     const tabListAdjusted: TabListType[] = useMemo(
         () =>
@@ -87,18 +102,22 @@ export function ControllableTabContainer({
     );
 
     const currentTab: ReactNode | undefined = useMemo(
-        () => tabListAdjusted[currentTabIndex]?.content,
+        () => (currentTabIndex !== undefined ? tabListAdjusted[currentTabIndex]?.content : undefined),
         [currentTabIndex, tabListAdjusted]
     );
 
     // Handles if the current tab changes outside the widget - Set the Index
-    useEffect(() => setCurrentTabIndex(Number(defaultTabIndex.value)), [defaultTabIndex.value]);
+    useEffect(() => {
+        if (defaultIndex !== undefined) {
+            setSelectedTabIndex(defaultIndex);
+        }
+    }, [defaultIndex]);
 
     // Event for when a different tab is clicked
     const handleTabClick = (tab: TabListType, index: number): void => {
         tab.onTabClick?.execute();
         if (!tab.disableTabChange) {
-            setCurrentTabIndex(index);
+            setSelectedTabIndex(index);
         }
     };
 
@@ -108,22 +127,22 @@ export function ControllableTabContainer({
                 tabList={tabListAdjusted.map((tab, index): Tab => {
                     return {
                         captionType: tab.captionType,
-                        captionText: tab.captionText.value as string,
-                        captionHTML: tab.captionHTML.value as string,
+                        captionText: tab.captionText.value ?? "",
+                        captionHTML: tab.captionHTML.value ?? "",
                         captionContent: tab.captionContent,
                         badgeText: tab.badgeText?.value,
                         onSelect: () => handleTabClick(tab, index)
                     };
                 })}
-                currentTabIndex={currentTabIndex}
+                currentTabIndex={currentTabIndex ?? -1}
                 badgeStyle={badgeStyle}
                 badgeDirection={badgeDirection}
                 tabIndex={tabIndex}
             />
             <TabContent
-                currentTabIndex={currentTabIndex}
+                currentTabIndex={currentTabIndex ?? -1}
                 tab={currentTab}
-                isLoading={tabListType === "dynamic" ? datasource.status === ValueStatus.Loading : false}
+                isLoading={isLoading || currentTabIndex === undefined}
             />
         </div>
     );

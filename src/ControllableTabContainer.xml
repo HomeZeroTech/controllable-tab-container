@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
     <name>Controllable Tab Container</name>
     <description>Tab container that allows dynamically controlling which tab is shown by default and other tabs are NOT rendered when hidden</description>
-    <helpUrl>https://github.com/bsgriggs/mendix-controllable-tab-container/blob/master/README.md</helpUrl>
+    <helpUrl>https://github.com/HomeZeroTech/controllable-tab-container/blob/main/README.md</helpUrl>
     <properties>
         <propertyGroup caption="Tabs">
             <property key="defaultTabIndex" type="expression" defaultValue="0" required="true">
